@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Author {
+  id          String  @id @default(uuid())
+  name        String
+  nationality String?
+  birthYear   Int?
+  books       Book[]
+}
+
+model Book {
+  id        String   @id @default(uuid())
+  title     String
+  year      Int
+  genre     String
+  available Boolean  @default(true)
+  authorId  String
+  author    Author   @relation(fields: [authorId], references: [id])
+}
