@@ -1,8 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const { getAllBooks, createBook } = require("../controllers/book.controller");
+const router = require("express").Router();
+const bookController = require("../controllers/book.controller");
 
-router.get("/", getAllBooks);
-router.post("/", createBook);
+router.get("/", bookController.getBooks);
 
 module.exports = router;

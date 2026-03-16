@@ -2,7 +2,7 @@
   "name": "pw-p-lab-biblioteca-avancada-36339",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
@@ -12,8 +12,8 @@
     "type": "git",
     "url": "git+https://github.com/carreira28/PW-P-LAB-BIBLIOTECA-AVANCADA-36339.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["api", "express", "node", "prisma", "postgresql"],
+  "author": "Rodrigo",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
@@ -23,6 +23,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@prisma/extension-accelerate": "^3.0.1",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
