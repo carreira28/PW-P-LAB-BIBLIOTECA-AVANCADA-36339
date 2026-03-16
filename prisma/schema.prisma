@@ -15,11 +15,11 @@ model Author {
 }
 
 model Book {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   title     String
   year      Int
   genre     String
-  available Boolean  @default(true)
+  available Boolean @default(true)
   authorId  String
-  author    Author   @relation(fields: [authorId], references: [id])
+  author    Author  @relation(fields: [authorId], references: [id])
 }
