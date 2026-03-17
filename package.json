@@ -12,7 +12,13 @@
     "type": "git",
     "url": "git+https://github.com/carreira28/PW-P-LAB-BIBLIOTECA-AVANCADA-36339.git"
   },
-  "keywords": ["api", "express", "node", "prisma", "postgresql"],
+  "keywords": [
+    "api",
+    "express",
+    "node",
+    "prisma",
+    "postgresql"
+  ],
   "author": "Rodrigo",
   "license": "ISC",
   "type": "commonjs",
