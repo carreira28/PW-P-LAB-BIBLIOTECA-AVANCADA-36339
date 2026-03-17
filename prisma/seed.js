@@ -1,13 +1,12 @@
 require("dotenv").config();
 
 const { PrismaClient } = require("@prisma/client");
-const { PrismaPg } = require("@prisma/adapter-pg");
+const { withAccelerate } = require("@prisma/extension-accelerate");
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.DATABASE_URL,
+}).$extends(withAccelerate());
 
-const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const author1 = await prisma.author.create({
