@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "seed": "node prisma/seed.js"
-  },
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js",
+  "seed": "node prisma/seed.js",
+  "postinstall": "prisma generate"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/carreira28/PW-P-LAB-BIBLIOTECA-AVANCADA-36339.git"
