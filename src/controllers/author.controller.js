@@ -23,19 +23,51 @@ const getAuthorBooks = async (req, res, next) => {
   try {
     const author = await authorService.getAuthorById(req.params.id);
     if (!author) return res.status(404).json({ message: "Autor não encontrado" });
-    res.json(author.books); // Apenas a lista de livros
+    res.json(author.books);
   } catch (error) { next(error); }
 };
 
 const createAuthor = async (req, res, next) => {
   try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "O campo 'name' é obrigatório." });
+    }
     const newAuthor = await authorService.createAuthor(req.body);
     res.status(201).json(newAuthor);
   } catch (error) { next(error); }
 };
 
+// Desafio 5 — transação Prisma
+const createAuthorWithBooks = async (req, res, next) => {
+  try {
+    const { name, nationality, birthYear, books } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "O campo 'name' é obrigatório." });
+    }
+    if (!books || !Array.isArray(books) || books.length === 0) {
+      return res.status(400).json({ message: "É necessário incluir pelo menos um livro." });
+    }
+    const result = await authorService.createAuthorWithBooks(
+      { name, nationality, birthYear },
+      books
+    );
+    res.status(201).json(result);
+  } catch (error) { next(error); }
+};
+
+// Desafio 3 — top autores
+const getTopAuthors = async (req, res, next) => {
+  try {
+    const authors = await authorService.getTopAuthors();
+    res.json(authors);
+  } catch (error) { next(error); }
+};
+
 const updateAuthor = async (req, res, next) => {
   try {
+    const exists = await authorService.getAuthorById(req.params.id);
+    if (!exists) return res.status(404).json({ message: "Autor não encontrado" });
     const updated = await authorService.updateAuthor(req.params.id, req.body);
     res.json(updated);
   } catch (error) { next(error); }
@@ -63,6 +95,8 @@ module.exports = {
   getAuthorById,
   getAuthorBooks,
   createAuthor,
+  createAuthorWithBooks,
+  getTopAuthors,
   updateAuthor,
   deleteAuthor,
   searchAuthors

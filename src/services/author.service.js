@@ -2,8 +2,8 @@ const prisma = require("../prisma/prismaClient");
 
 const getAllAuthors = async (skip, take, sortField) => {
   return await prisma.author.findMany({
-    skip: skip,
-    take: take,
+    skip,
+    take,
     orderBy: { [sortField]: "asc" },
     include: { _count: { select: { books: true } } }
   });
@@ -12,7 +12,7 @@ const getAllAuthors = async (skip, take, sortField) => {
 const getAuthorById = async (id) => {
   return await prisma.author.findUnique({
     where: { id },
-    include: { books: true } 
+    include: { books: true }
   });
 };
 
@@ -23,15 +23,32 @@ const searchAuthorByName = async (name) => {
   });
 };
 
+const getTopAuthors = async () => {
+  return await prisma.author.findMany({
+    include: { _count: { select: { books: true } } },
+    orderBy: { books: { _count: "desc" } },
+    take: 5
+  });
+};
+
 const createAuthor = async (authorData) => {
   return await prisma.author.create({ data: authorData });
 };
 
-const updateAuthor = async (id, data) => {
-  return await prisma.author.update({
-    where: { id },
-    data
+const createAuthorWithBooks = async (authorData, booksData) => {
+  return await prisma.$transaction(async (tx) => {
+    const author = await tx.author.create({ data: authorData });
+    const books = await Promise.all(
+      booksData.map((book) =>
+        tx.book.create({ data: { ...book, authorId: author.id } })
+      )
+    );
+    return { author, books };
   });
+};
+
+const updateAuthor = async (id, data) => {
+  return await prisma.author.update({ where: { id }, data });
 };
 
 const deleteAuthor = async (id) => {
@@ -50,7 +67,9 @@ module.exports = {
   getAllAuthors,
   getAuthorById,
   searchAuthorByName,
+  getTopAuthors,
   createAuthor,
+  createAuthorWithBooks,
   updateAuthor,
   deleteAuthor
 };

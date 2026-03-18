@@ -2,28 +2,17 @@ const prisma = require("../prisma/prismaClient");
 
 const getAllBooks = async (skip, take, sortField) => {
   return await prisma.book.findMany({
-    skip: skip,
-    take: take,
-    orderBy: {
-      [sortField]: "asc" 
-    },
-    include: {
-      author: true
-    }
+    skip,
+    take,
+    orderBy: { [sortField]: "asc" },
+    include: { author: true }
   });
 };
 
 const searchBooksByTitle = async (title) => {
   return await prisma.book.findMany({
-    where: {
-      title: {
-        contains: title,   
-        mode: "insensitive"
-      }
-    },
-    include: {
-      author: true
-    }
+    where: { title: { contains: title, mode: "insensitive" } },
+    include: { author: true }
   });
 };
 
@@ -38,24 +27,31 @@ const getLibraryStats = async () => {
     totalBooks,
     totalAuthors,
     availableBooks,
-    borrowedBooks: totalBooks - availableBooks 
+    borrowedBooks: totalBooks - availableBooks
   };
 };
 
-const createBook = async (bookData) => {
-  const author = await prisma.author.findUnique({
-    where: { id: bookData.authorId }
+const getStatsByGenre = async () => {
+  const results = await prisma.book.groupBy({
+    by: ["genre"],
+    _count: { genre: true },
+    orderBy: { _count: { genre: "desc" } }
   });
 
+  return results.reduce((acc, item) => {
+    acc[item.genre] = item._count.genre;
+    return acc;
+  }, {});
+};
+
+const createBook = async (bookData) => {
+  const author = await prisma.author.findUnique({ where: { id: bookData.authorId } });
   if (!author) {
     const error = new Error("Autor não encontrado");
     error.status = 404;
     throw error;
   }
-
-  return await prisma.book.create({
-    data: bookData
-  });
+  return await prisma.book.create({ data: bookData });
 };
 
 const getBookById = async (id) => {
@@ -66,22 +62,18 @@ const getBookById = async (id) => {
 };
 
 const updateBook = async (id, data) => {
-  return await prisma.book.update({
-    where: { id },
-    data
-  });
+  return await prisma.book.update({ where: { id }, data });
 };
 
 const deleteBook = async (id) => {
-  return await prisma.book.delete({
-    where: { id }
-  });
+  return await prisma.book.delete({ where: { id } });
 };
 
 module.exports = {
   getAllBooks,
   searchBooksByTitle,
   getLibraryStats,
+  getStatsByGenre,
   createBook,
   getBookById,
   updateBook,
